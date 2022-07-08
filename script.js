@@ -608,11 +608,46 @@ class App {
         if (
             this.#map.getCenter().lat != cords[0] &&
             this.#map.getCenter().lng != cords[1]
-        )
-            this.#map.flyTo(cords, 17, {
+        ) {
+            this.#map.flyTo(cords, 16.5, {
                 animate: true,
                 duration: 1.5,
             });
+            // var myRenderer = L.canvas({ padding: 0 });
+            // var circleMarker = L.circleMarker(cords, {
+            //     renderer: myRenderer,
+            //     color: '#3388ff',
+            // }).addTo(this.#map);
+            const circle = L.circle(cords, {
+                radius: 75,
+                fillOpacity: 0.15,
+                weight: 0.5,
+                // lineCap: 'butt',
+                // lineJoin: 'none',
+                // border: 'none',
+            }).addTo(this.#map);
+            const dot = L.circle(cords, { radius: 2, weight: 10 }).addTo(
+                this.#map
+            );
+            // // this.#map.fitBounds(circle.getBounds());
+            // L.marker(cords, {
+            //     icon: L.icon({
+            //         iconUrl: '*',
+            //         iconSize: [35, 40], // size of the icon
+            //         popupAnchor: [0, -20], // point from which the popup should open relative to the iconAnchor
+            //     }),
+            // }).addTo(this.#map);
+        }
+        //     .bindPopup(
+        //         L.popup({
+        //             maxWidth: 200,
+        //             minWidth: 150,
+        //             autoClose: false,
+        //             closeOnClick: false,
+        //         })
+        //     )
+        // //     .setPopupContent(`test`)
+        //     .openPopup();
         // this.#map.setView(this.#userCords, 17);
     }
 }
