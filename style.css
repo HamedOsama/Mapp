@@ -1,0 +1,365 @@
+:root {
+    --color-brand--1: #ffb545;
+    --color-brand--2: #00c46a;
+
+    --color-dark--1: #343d44;
+    --color-dark--2: #42484d;
+    --color-light--1: #aaa;
+    --color-light--2: #ececec;
+    --color-light--3: rgb(214, 222, 224);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: inherit; */
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Manrope', sans-serif;
+    color: var(--color-light--2);
+    font-weight: 400;
+    line-height: 1.6;
+    height: 100vh;
+    overscroll-behavior-y: none;
+    background-color: #fff;
+    /* padding: 2.5rem; */
+    display: flex;
+}
+
+/* GENERAL */
+a:link,
+a:visited {
+    color: var(--color-brand--1);
+}
+
+/* SIDEBAR */
+.sidebar {
+    flex-basis: 50rem;
+    background-color: var(--color-dark--1);
+    padding: 3rem 5rem 4rem 5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    height: 5.2rem;
+    align-self: center;
+    margin-bottom: 4rem;
+}
+
+.workouts {
+    list-style: none;
+    height: 77vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.workouts::-webkit-scrollbar {
+    width: 0;
+}
+
+.workout {
+    background-color: var(--color-dark--2);
+    border-radius: 5px;
+    padding: 1.5rem 2.25rem;
+    margin-bottom: 1.75rem;
+    cursor: pointer;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1.5rem 1.5rem;
+}
+.workout--running {
+    border-left: 5px solid var(--color-brand--2);
+}
+.workout--cycling {
+    border-left: 5px solid var(--color-brand--1);
+}
+.workout .title {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+/* .workout .title .delete {
+    height: 22px;
+    width: 22px;
+    color: var(--color-dark--1);
+    font-size: 13px;
+    background: white;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.workout .title .delete:hover {
+    background-color: #cfcfcf;
+} */
+.workout__heading {
+    font-size: 1.7rem;
+    font-weight: 600;
+}
+
+.workout__details {
+    display: flex;
+    align-items: baseline;
+}
+
+.workout__icon {
+    font-size: 1.8rem;
+    margin-right: 0.2rem;
+    height: 0.28rem;
+}
+
+.workout__value {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.workout__unit {
+    font-size: 1.1rem;
+    color: var(--color-light--1);
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.form {
+    background-color: var(--color-dark--2);
+    border-radius: 5px;
+    padding: 1.5rem 2.75rem;
+    margin-bottom: 1.75rem;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 2.5rem;
+
+    /* Match height and activity boxes */
+    height: 9.25rem;
+    transition: all 0.5s, transform 1ms;
+}
+
+.form.hidden {
+    transform: translateY(-30rem);
+    height: 0;
+    padding: 0 2.25rem;
+    margin-bottom: 0;
+    opacity: 0;
+}
+
+.form__row {
+    display: flex;
+    align-items: center;
+}
+
+.form__row--hidden {
+    display: none;
+}
+
+.form__label {
+    flex: 0 0 50%;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.form__input {
+    width: 100%;
+    padding: 0.3rem 1.1rem;
+    font-family: inherit;
+    font-size: 1.4rem;
+    border: none;
+    border-radius: 3px;
+    background-color: var(--color-light--3);
+    transition: all 0.2s;
+}
+
+.form__input:focus {
+    outline: none;
+    background-color: #fff;
+}
+
+.form__btn {
+    display: none;
+}
+
+.copyright {
+    margin-top: 0.5rem;
+    font-size: 1.3rem;
+    text-align: center;
+    color: var(--color-light--1);
+}
+
+.github-link:link,
+.github-link:visited {
+    color: var(--color-light--1);
+    transition: all 0.2s;
+}
+
+.github-link:hover,
+.github-link:active {
+    color: var(--color-light--2);
+}
+
+/* MAP */
+#map {
+    flex: 1;
+    height: 100%;
+    background-color: var(--color-light--1);
+}
+
+/* Popup width is defined in JS using options */
+.leaflet-popup .leaflet-popup-content-wrapper {
+    background-color: var(--color-dark--1);
+    color: var(--color-light--2);
+    border-radius: 5px;
+    padding-right: 0.6rem;
+}
+
+.leaflet-popup .leaflet-popup-content {
+    font-size: 1.5rem;
+}
+
+.leaflet-popup .leaflet-popup-tip {
+    background-color: var(--color-dark--1);
+}
+
+.running-popup .leaflet-popup-content-wrapper {
+    border-left: 5px solid var(--color-brand--2);
+}
+.cycling-popup .leaflet-popup-content-wrapper {
+    border-left: 5px solid var(--color-brand--1);
+}
+.leaflet-zoom-anim .leaflet-zoom-animated {
+    transition: 12s;
+}
+.currentLocation {
+    z-index: 09999999999999999999999;
+    font-size: 2.5rem;
+    background: white;
+    color: black;
+    color: var(--color-brand--1);
+    padding: 0.5rem;
+    position: absolute;
+    left: 56rem;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 5px;
+}
+@media (max-width: 950px) {
+    body {
+        flex-direction: column-reverse;
+    }
+    .sidebar {
+        max-height: 50vh;
+    }
+    .currentLocation {
+        left: 10px;
+        bottom: 51%;
+        /* top: 50px; */
+    }
+}
+@media (max-width: 500px) {
+    .sidebar {
+        padding: 2rem 2rem 4rem 2rem;
+    }
+}
+@media (max-width: 450px) {
+    .sidebar {
+        padding: 2rem 2rem 4rem 2rem;
+    }
+    .workouts {
+        margin: 5px;
+    }
+    .form {
+        padding: 1.5rem 1.75rem;
+        gap: 0.5rem 1rem;
+    }
+    .form__label {
+        flex: 0 0 48%;
+        font-size: 1.2rem;
+        color: white;
+    }
+    .workout {
+        /* padding: 0.75rem 1rem; */
+        gap: 1.5rem 0.5rem;
+    }
+    .workout__heading {
+        font-size: 1.6rem;
+    }
+    .workout__value {
+        font-size: 1.25rem;
+    }
+}
+
+.btn {
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 1px solid #bdbdbd;
+    height: 35px;
+    padding: 0 9px 0 9px;
+    font-size: 16px;
+    letter-spacing: 0.25px;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: 1s;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.btn-edit {
+    right: 45px;
+    color: #33b2ff;
+}
+.btn-delete {
+    color: #ff3834;
+}
+.btn:focus {
+    outline: none;
+}
+.btn .mdi {
+    margin: 0 2px 0;
+}
+.btn-delete > .deleted,
+.btn-edit > .editing {
+    display: none;
+}
+.btn-delete:hover,
+.btn-edit:hover {
+    background-color: #fff5f5;
+}
+.btn-delete:hover > .deleted,
+.btn-edit:hover > .editing {
+    display: block;
+}
+.btn-delete:hover > .delete,
+.btn-edit:hover > .edit {
+    display: none;
+}
+.btn-delete:focus,
+.btn-edit:focus {
+    box-shadow: 0 0 0 2px #ffcccc;
+}
+
+.leaflet-popup-content {
+    margin: 13px 19px;
+}
+
+.default-btn {
+    background-color: transparent;
+}
+.selected-btn {
+    background-color: #fff5f5;
+}
