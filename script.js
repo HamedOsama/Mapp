@@ -282,6 +282,7 @@ class App {
         this._renderWorkoutData(workout);
         // Update UI
         this._hideForm();
+        this._clearDataFromForm();
     }
     _getWorkoutIndex(target) {
         return this.#workouts.findIndex(s => s.id === +target.dataset.id);
