@@ -65,7 +65,7 @@ class App {
         // }
         // });
         // Attach  event handlers
-        form.addEventListener('submit', this._newWorkOut.bind(this));
+        form.addEventListener('keydown', this._newWorkOut.bind(this));
         inputType.addEventListener('change', this._toggleElevationField);
         containerWorkouts.addEventListener(
             'click',
@@ -235,8 +235,12 @@ class App {
         }
     }
     _newWorkOut(e) {
+        const keys = ['enter', 'return'];
+        if (!keys.includes(e.key.toLowerCase())) return;
         e.preventDefault();
+
         if (form.classList.contains('update')) {
+            // inputDistance.addEventListener('ke')
             this._updateWorkoutData();
             return;
         }
@@ -504,6 +508,7 @@ class App {
         this._setLocalStorage();
         // Update UI
         this._hideForm();
+        this._clearDataFromForm();
         form.classList.remove('update');
         currentLI.querySelector('#duration').innerHTML = duration;
         currentLI.querySelector('#distance').innerHTML = distance;
