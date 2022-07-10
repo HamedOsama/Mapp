@@ -532,7 +532,7 @@ class App {
             this._viewPort(--zoomLevel);
             setTimeout(() => {
                 this._checkView();
-            }, 250);
+            }, 500);
         }
     }
     _GetCurrentPosition(cords, myLocation = false) {
