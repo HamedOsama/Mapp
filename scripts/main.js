@@ -10,11 +10,8 @@ const inputElevation = document.querySelector('.form__input--elevation');
 const deleteBtn = document.querySelector('.btn-delete');
 const editBtn = document.querySelector('.btn-edit');
 const currentLocationBtn = document.querySelector('.currentLocation');
-let map, mapEvent;
-const icons = {
-    running: '🏃‍♂️',
-    cycling: '🚴‍♀️',
-};
+// let map, mapEvent;
+
 const getDate = () => {
     const date = new Date();
     const dateOptions = {
@@ -32,16 +29,20 @@ const formatText = text => {
 };
 class App {
     #bindClosePopup = this._closePopup.bind(this);
-    #map;
-    #mapEvent;
-    #mapZoomLevel = 18;
-    #workouts = [];
-    #userCords;
     #icon = L.icon({
         iconUrl: './icon.png',
         iconSize: [35, 40], // size of the icon
         popupAnchor: [0, -20], // point from which the popup should open relative to the iconAnchor
     });
+    #icons = {
+        running: '🏃‍♂️',
+        cycling: '🚴‍♀️',
+    };
+    #map;
+    #mapEvent;
+    #mapZoomLevel = 18;
+    #workouts = [];
+    #userCords;
     constructor() {
         // Get user's position
         this._getPosition();
@@ -85,7 +86,6 @@ class App {
         this._drawCircle(this.#userCords);
         // handling clicks on map
         this.#map.on('click', this._showForm.bind(this));
-        document.querySelector('#map').addEventListener('click', this._test);
         // Get data from local storage
         this._loadDataFromLocalStorage();
         // Update workouts array;
@@ -143,9 +143,9 @@ class App {
                 })
             )
             .setPopupContent(
-                `${icons[`${workout.type}`]} ${formatText(workout.type)} on ${
-                    workout.date
-                }`
+                `${this.#icons[`${workout.type}`]} ${formatText(
+                    workout.type
+                )} on ${workout.date}`
             )
             .openPopup();
     }
@@ -169,7 +169,7 @@ class App {
         </div>
         <div class="workout__details">
             <span class="workout__icon" id='workout-symbol'>${
-                icons[`${workout.type}`]
+                this.#icons[`${workout.type}`]
             }</span>
             <span class="workout__value" id='distance'>${
                 workout.distance
@@ -221,7 +221,6 @@ class App {
         if (!keys.includes(e.key.toLowerCase())) return;
         e.preventDefault();
         if (form.classList.contains('update')) {
-            // inputDistance.addEventListener('ke')
             this._updateWorkoutData();
             return;
         }
@@ -232,7 +231,6 @@ class App {
         const distance = +inputDistance.value;
         const duration = +inputDuration.value;
         let workout;
-        console.log(distance, duration);
         // check if running or cycling
         if (type === 'running') {
             const cadence = +inputCadence.value;
@@ -242,7 +240,6 @@ class App {
                     'failed',
                     'Inputs have to be positive numbers!'
                 );
-            // return alert('Inputs have to be positive numbers!');
             // create Running object
             workout = new Running(cords, distance, duration, cadence);
         }
@@ -250,19 +247,16 @@ class App {
             const elevation = +inputElevation.value;
             // check if data is valid
             if (!Number.isFinite(elevation) || elevation == 0)
-                // return alert('Input have to be numbers!');
                 return this._pushPopup('failed', 'Input have to be number!');
             if (!this._validateInputs(distance, duration))
                 return this._pushPopup(
                     'failed',
                     'Inputs have to be positive numbers!'
                 );
-            // return alert('Inputs have to be positive numbers!');
             // create Cycling object
             workout = new Cycling(cords, distance, duration, elevation);
         }
-        // push workout to workouts global array
-        console.log(this.#workouts);
+        // push workout to workouts array
         this.#workouts.push(workout);
         //push data to local storage
         this._setLocalStorage();
@@ -332,9 +326,6 @@ class App {
                 }
             }
             this._showForm();
-            console.log('continued');
-            // inputType.value =
-            // e.innerHTML = '<i class="fa-solid fa-user-pen"></i>';
             e.querySelector('.editing').style.display = 'block';
             e.querySelector('.edit').style.display = 'none';
             e.classList.add('selected-btn');
@@ -345,7 +336,6 @@ class App {
             form.dataset.id = target.dataset.id;
             if (target.classList.contains('workout--running')) {
                 if (inputType.value !== 'running') {
-                    console.log(1);
                     inputType.value = 'running';
                     this._toggleElevationField();
                 }
@@ -360,13 +350,6 @@ class App {
                     '#calculated'
                 );
             }
-            console.log(1);
-            console.log(target.dataset.id);
-            console.log(form.dataset.id);
-            // Get data from form
-            // const type = inputType.value;
-            // const distance = +inputDistance.value;
-            // const duration = +inputDuration.value;
         });
     }
     _getInnerHtml(selector, element) {
@@ -396,7 +379,6 @@ class App {
                     'failed',
                     'Inputs have to be positive numbers!'
                 );
-            // return alert('Inputs have to be positive numbers!');
         }
         if (type === 'cycling') {
             elevation = +inputElevation.value;
@@ -406,7 +388,6 @@ class App {
                     'failed',
                     'Input have to be positive number!'
                 );
-            // return alert('Input have to be numbers!');
             if (!this._validateInputs(distance, duration))
                 return this._pushPopup(
                     'failed',
@@ -457,8 +438,6 @@ class App {
 
         if (type === 'running') {
             this.#workouts[index].cadence = cadence;
-            console.log(cadence);
-            console.log(currentLI.querySelector('#calculated').innerHTML);
             currentLI.querySelector('#calculated').innerHTML = cadence;
             this.#workouts[index].pace = this.#workouts[index].calcPace();
             currentLI.querySelector('#speed').innerHTML =
@@ -471,7 +450,6 @@ class App {
             currentLI.querySelector('#speed').innerHTML =
                 this.#workouts[index].speed;
         }
-        t2 = this.#workouts;
         //push data to local storage
         this._setLocalStorage();
         // Update UI
