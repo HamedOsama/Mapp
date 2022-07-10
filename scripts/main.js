@@ -34,6 +34,7 @@ const formatText = text => {
     return text[0].toUpperCase() + text.slice(1);
 };
 class App {
+    #bindClosePopup = this._closePopup.bind(this);
     #map;
     #mapEvent;
     #mapZoomLevel = 18;
@@ -44,7 +45,8 @@ class App {
         iconSize: [35, 40], // size of the icon
         popupAnchor: [0, -20], // point from which the popup should open relative to the iconAnchor
     });
-    #oldButtonData;
+    // #gotUserLocation = false;
+    // #oldButtonData;
     constructor() {
         // Get user's position
         this._getPosition();
@@ -78,10 +80,14 @@ class App {
         navigator.geolocation.getCurrentPosition(
             this._loadMap.bind(this),
             function () {
-                alert('Could not get your location');
-            }
+                this._pushPopup(
+                    'failed',
+                    "Couldn't your location please check your location settings and try again"
+                );
+            }.bind(this)
         );
     }
+
     _loadMap(position) {
         const { latitude, longitude } = position.coords;
         const cords = [latitude, longitude];
@@ -94,8 +100,10 @@ class App {
         map = this.#map;
         currentLocationBtn.addEventListener(
             'click',
-            this._GetCurrentPosition.bind(this, this.#userCords)
+            this._GetCurrentPosition.bind(this, this.#userCords, true)
         );
+        //put current position of the user on the map
+        this._drawCircle(this.#userCords);
         // handling clicks on map
         this.#map.on('click', this._showForm.bind(this));
         document.querySelector('#map').addEventListener('click', this._test);
@@ -114,7 +122,7 @@ class App {
         this.#mapEvent = e || this.#mapEvent;
         if (form.classList.contains('update')) {
             form.classList.remove('update');
-            this._removeUpdateButtons();
+            this._removeActiveUpdateButtons();
             // Clear old data from form
             this._clearDataFromForm();
         }
@@ -220,7 +228,7 @@ class App {
         </div>
         `;
         this._updateWorkout(data.querySelector('.btn-edit'));
-        this.#oldButtonData = data.querySelector('.btn-edit').innerHTML;
+        // this.#oldButtonData = data.querySelector('.btn-edit').innerHTML;
         form.insertAdjacentElement('afterend', data);
     }
     _removeMarker(cords) {
@@ -257,7 +265,11 @@ class App {
             const cadence = +inputCadence.value;
             // check if data is valid
             if (!this._validateInputs(distance, duration, cadence))
-                return alert('Inputs have to be positive numbers!');
+                return this._pushPopup(
+                    'failed',
+                    'Inputs have to be positive numbers!'
+                );
+            // return alert('Inputs have to be positive numbers!');
             // create Running object
             workout = new Running(cords, distance, duration, cadence);
         }
@@ -265,9 +277,14 @@ class App {
             const elevation = +inputElevation.value;
             // check if data is valid
             if (!Number.isFinite(elevation) || elevation == 0)
-                return alert('Input have to be numbers!');
+                // return alert('Input have to be numbers!');
+                return this._pushPopup('failed', 'Input have to be number!');
             if (!this._validateInputs(distance, duration))
-                return alert('Inputs have to be positive numbers!');
+                return this._pushPopup(
+                    'failed',
+                    'Inputs have to be positive numbers!'
+                );
+            // return alert('Inputs have to be positive numbers!');
             // create Cycling object
             workout = new Cycling(cords, distance, duration, elevation);
         }
@@ -361,7 +378,7 @@ class App {
     _updateWorkout(e) {
         e.addEventListener('click', () => {
             if (form.classList.contains('update')) {
-                this._removeUpdateButtons();
+                this._removeActiveUpdateButtons();
                 if (
                     e.parentElement.parentElement.dataset.id === form.dataset.id
                 ) {
@@ -416,11 +433,11 @@ class App {
         selector = selector || document;
         return selector.querySelector(`${element}`).innerHTML;
     }
-    _removeUpdateButtons() {
+    _removeActiveUpdateButtons() {
         document.querySelectorAll('.btn-edit').forEach(el => {
             // el.innerHTML = this.#oldButtonData;
-            el.querySelector('.editing').style.display = 'block';
-            el.querySelector('.edit').style.display = 'none';
+            el.querySelector('.editing').style.display = 'none';
+            el.querySelector('.edit').style.display = 'block';
             el.classList.remove('selected-btn');
             el.classList.add('default-btn');
             // el.style.backgroundColor = 'transparent';
@@ -437,15 +454,27 @@ class App {
             cadence = +inputCadence.value;
             // check if data is valid
             if (!this._validateInputs(distance, duration, cadence))
-                return alert('Inputs have to be positive numbers!');
+                return this._pushPopup(
+                    'failed',
+                    'Inputs have to be positive numbers!'
+                );
+            // return alert('Inputs have to be positive numbers!');
         }
         if (type === 'cycling') {
             elevation = +inputElevation.value;
             // check if data is valid
             if (!Number.isFinite(elevation) || elevation == 0)
-                return alert('Input have to be numbers!');
+                return this._pushPopup(
+                    'failed',
+                    'Input have to be positive number!'
+                );
+            // return alert('Input have to be numbers!');
             if (!this._validateInputs(distance, duration))
-                return alert('Inputs have to be positive numbers!');
+                return this._pushPopup(
+                    'failed',
+                    'Inputs have to be positive numbers!'
+                );
+            // return alert('Inputs have to be positive numbers!');
         }
         // Get clicked workout index
         const index = this._getWorkoutIndex(form);
@@ -513,7 +542,8 @@ class App {
         form.classList.remove('update');
         currentLI.querySelector('#duration').innerHTML = duration;
         currentLI.querySelector('#distance').innerHTML = distance;
-        this._removeUpdateButtons();
+        this._removeActiveUpdateButtons();
+        this._pushPopup('success', 'Workout updated successfully');
     }
     _buildClassBasedLocalStorage() {
         if (window.localStorage.getItem('workouts')) {
@@ -598,7 +628,7 @@ class App {
             .addTo(map)
             .bindPopup('A pretty CSS3 popup.<br> Easily customizable.');
     }
-    _GetCurrentPosition(cords) {
+    _GetCurrentPosition(cords, myLocation = false) {
         // return;
         const currentCords = [
             this.#map.getCenter().lat,
@@ -606,29 +636,31 @@ class App {
         ];
         console.log(currentCords, cords);
         if (
-            this.#map.getCenter().lat != cords[0] &&
-            this.#map.getCenter().lng != cords[1]
+            Math.abs(this.#map.getCenter().lat - cords[0]) >= 0.00001 &&
+            Math.abs(this.#map.getCenter().lng - cords[1]) >= 0.00001
         ) {
-            this.#map.flyTo(cords, 16.5, {
-                animate: true,
-                duration: 1.5,
-            });
+            if (
+                Math.abs(this.#map.getCenter().lat - cords[0]) >= 0.005 ||
+                Math.abs(this.#map.getCenter().lng - cords[1]) >= 0.005
+            ) {
+                this.#map.flyTo(cords, 16.5, {
+                    animate: true,
+                    duration: 1.5,
+                });
+            } else {
+                this.#map.flyTo(cords, 16.5, {
+                    animate: true,
+                    duration: 0.5,
+                });
+            }
+            // if (myLocation && !this.#gotUserLocation) {
+            // this._drawCircle(cords);
+            // }
             // var myRenderer = L.canvas({ padding: 0 });
             // var circleMarker = L.circleMarker(cords, {
             //     renderer: myRenderer,
             //     color: '#3388ff',
             // }).addTo(this.#map);
-            const circle = L.circle(cords, {
-                radius: 75,
-                fillOpacity: 0.15,
-                weight: 0.5,
-                // lineCap: 'butt',
-                // lineJoin: 'none',
-                // border: 'none',
-            }).addTo(this.#map);
-            const dot = L.circle(cords, { radius: 2, weight: 10 }).addTo(
-                this.#map
-            );
             // // this.#map.fitBounds(circle.getBounds());
             // L.marker(cords, {
             //     icon: L.icon({
@@ -650,7 +682,46 @@ class App {
         //     .openPopup();
         // this.#map.setView(this.#userCords, 17);
     }
+    _drawCircle(cords) {
+        const dot = L.circle(cords, { radius: 2, weight: 10 }).addTo(this.#map);
+        const circle = L.circle(cords, {
+            radius: 75,
+            fillOpacity: 0.15,
+            weight: 0.5,
+        }).addTo(this.#map);
+        // this.#gotUserLocation = true;
+    }
+    _pushPopup(stat, message) {
+        textAnn.innerHTML = message;
+        status.innerHTML = formatText(stat);
+        icon.innerHTML = stat == 'success' ? success : failed;
+        const color = stat == 'success' ? '#2196f3' : '#ff3821';
+        document.documentElement.style.setProperty('--pop', `${color}`);
+        popup.classList.add('active');
+
+        document.addEventListener('click', this.#bindClosePopup);
+        // document.addEventListener('click', closePopup);
+    }
+    _closePopup(e) {
+        const check = e.target.closest('.popup');
+        if (!check) {
+            popup.classList.remove('active');
+            console.log('removed');
+            document.removeEventListener('click', this.#bindClosePopup);
+        }
+    }
 }
+
+// function closePopup(e) {
+//     const check = e.target.closest('.popup');
+//     if (!check) {
+//         popup.classList.remove('active');
+//         console.log('removed');
+//         // console.log(this);
+//         document.removeEventListener('click', closePopup);
+//     }
+// }
+let c1, d1;
 let t1, t2;
 const app = new App();
 
