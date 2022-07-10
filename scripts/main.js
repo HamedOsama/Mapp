@@ -1,8 +1,5 @@
 'use strict';
 
-// prettier-ignore
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
 const inputType = document.querySelector('.form__input--type');
@@ -45,27 +42,10 @@ class App {
         iconSize: [35, 40], // size of the icon
         popupAnchor: [0, -20], // point from which the popup should open relative to the iconAnchor
     });
-    // #gotUserLocation = false;
-    // #oldButtonData;
     constructor() {
         // Get user's position
         this._getPosition();
         // // Get data from local storage
-        // setTimeout(() => {
-        //     this._loadDataFromLocalStorage();
-        // }, 1000);
-        // this.#map.addEventListener('load', () => console.log(12121212));
-        //delete button
-        // deleteBtn.addEventListener('click', e => {
-        // const tt = e.target;
-        // console.log(tt);
-        // if (tt) {
-        // containerWorkouts.removeEventListener(
-        // 'click',
-        // this._moveMarkerToMap.bind(this)
-        // );
-        // }
-        // });
         // Attach  event handlers
         form.addEventListener('keydown', this._newWorkOut.bind(this));
         inputType.addEventListener('change', this._toggleElevationField);
@@ -73,13 +53,12 @@ class App {
             'click',
             this._moveMarkerToMap.bind(this)
         );
-        // containerWorkouts.removeEventListener('click', this._moveMarkerToMap);
-        // map = 1;
     }
     _getPosition() {
         navigator.geolocation.getCurrentPosition(
             this._loadMap.bind(this),
             function () {
+                // if there is error pop it to the user
                 this._pushPopup(
                     'failed',
                     "Couldn't your location please check your location settings and try again"
@@ -111,12 +90,8 @@ class App {
         this._loadDataFromLocalStorage();
         // Update workouts array;
         this._buildClassBasedLocalStorage();
-        // Put Get Current location button on map
-        // this._putFixedButton();
     }
     _showForm(e) {
-        // console.log(e.target);
-        // if (e.target) return;
         form.classList.remove('hidden');
         // inputDistance.focus();
         this.#mapEvent = e || this.#mapEvent;
@@ -228,7 +203,6 @@ class App {
         </div>
         `;
         this._updateWorkout(data.querySelector('.btn-edit'));
-        // this.#oldButtonData = data.querySelector('.btn-edit').innerHTML;
         form.insertAdjacentElement('afterend', data);
     }
     _removeMarker(cords) {
@@ -243,10 +217,9 @@ class App {
         }
     }
     _newWorkOut(e) {
-        const keys = ['enter', 'return'];
+        const keys = ['enter', 'return', 'done'];
         if (!keys.includes(e.key.toLowerCase())) return;
         e.preventDefault();
-
         if (form.classList.contains('update')) {
             // inputDistance.addEventListener('ke')
             this._updateWorkoutData();
@@ -305,20 +278,13 @@ class App {
         return this.#workouts.findIndex(s => s.id === +target.dataset.id);
     }
     _moveMarkerToMap(e) {
-        console.log('up');
-
-        // console.log(e.target.dataset.id);
-        console.log(e.target);
-        t2 = e.target;
         const target = e.target.closest('.workout');
-        console.log(target);
         if (!target) return;
         // Get clicked workout index
         const index = this._getWorkoutIndex(target);
         // Get the workout
         const workout = this.#workouts[index];
         const checkButton = e.target.closest('.btn-delete');
-        // console.log(checkButton);
         if (checkButton) {
             // Remove Workout details from the page
             containerWorkouts.removeChild(target);
@@ -330,50 +296,24 @@ class App {
             this._removeMarker(workout.cords);
             return;
         }
-        // console.log(checkButton);
-        // console.log(target);
-        // if (e.target.nodeName === 'LI') {
-        // const index = this.#workouts.findIndex(
-        //     s => s.id === +target.dataset.id
-        // );
-        console.log('end');
-        // t1 = workout;
-        // console.log(workout);
-        // console.log()
-        // console.log(1);
-        // console.log(this.#workouts);
-        // map('map').setView(workout.cords, 18);
-        // this.#map.setView(workout.cords, this.#mapZoomLevel, {
-        //     animate: true,
-        //     pan: {
-        //         duration: 2,
-        //     },
-        // });
-        // this.#map.flyTo(workout.cords, 17, {
-        //     animate: true,
-        //     duration: 1.5,
-        // });
         this._GetCurrentPosition(workout.cords);
-
-        // }
     }
     _setLocalStorage() {
         window.localStorage.setItem('workouts', JSON.stringify(this.#workouts));
     }
     _loadDataFromLocalStorage() {
         const workouts = JSON.parse(window.localStorage.getItem('workouts'));
-        t1 = workouts;
         if (workouts) {
             this.#workouts = workouts;
-            console.log(workouts);
             workouts.forEach(el => {
+                // build label foreach workout in navbar
                 this._renderWorkoutData(el);
+                // put marker foreach workout in the map
                 this._renderWorkoutMaker(el);
             });
         }
         //adjust viewport
         if (this.#workouts.length > 1) this._checkView();
-        // this._viewPort(--this.#mapZoomLevel);
     }
     _updateWorkout(e) {
         e.addEventListener('click', () => {
@@ -435,12 +375,10 @@ class App {
     }
     _removeActiveUpdateButtons() {
         document.querySelectorAll('.btn-edit').forEach(el => {
-            // el.innerHTML = this.#oldButtonData;
             el.querySelector('.editing').style.display = 'none';
             el.querySelector('.edit').style.display = 'block';
             el.classList.remove('selected-btn');
             el.classList.add('default-btn');
-            // el.style.backgroundColor = 'transparent';
         });
     }
     _updateWorkoutData() {
@@ -581,7 +519,6 @@ class App {
                 element = el;
             }
         });
-        console.log(element);
         return element.cords;
     }
     _findMax() {
@@ -602,7 +539,6 @@ class App {
         ];
     }
     _viewPort(zoomLevel) {
-        // if (cords) this.#map.setView(cords, zoomLevel);
         const first = this._findMin();
         const sec = this._findMax();
         const final = this._midpoint(first, sec);
@@ -610,7 +546,6 @@ class App {
     }
     _checkView() {
         let zoomLevel = --this.#mapZoomLevel;
-        // zoomLevel--;
         // Get min cords workout in viewport of the map
         const one = this.#map.getBounds().contains(this._findMin());
         // Get max cords workout in viewport of the map
@@ -618,23 +553,17 @@ class App {
         // Check if min and max cords in viewport if no adjust viewport and check again
         if (!one || !two) {
             this._viewPort(--zoomLevel);
-            this._checkView();
+            setTimeout(() => {
+                this._checkView();
+            }, 250);
         }
     }
-    _getCorner() {
-        const latlng = L.marker(map.getBounds().getSouthEast())._latlng;
-        const cords = [latlng.lat + 0.02, latlng.lng + 0.02];
-        L.marker(cords)
-            .addTo(map)
-            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.');
-    }
     _GetCurrentPosition(cords, myLocation = false) {
-        // return;
+        // Get center of current viewport
         const currentCords = [
             this.#map.getCenter().lat,
             this.#map.getCenter().lng,
         ];
-        console.log(currentCords, cords);
         if (
             Math.abs(this.#map.getCenter().lat - cords[0]) >= 0.00001 &&
             Math.abs(this.#map.getCenter().lng - cords[1]) >= 0.00001
@@ -643,6 +572,7 @@ class App {
                 Math.abs(this.#map.getCenter().lat - cords[0]) >= 0.005 ||
                 Math.abs(this.#map.getCenter().lng - cords[1]) >= 0.005
             ) {
+                // move to this cords
                 this.#map.flyTo(cords, 16.5, {
                     animate: true,
                     duration: 1.5,
@@ -653,43 +583,15 @@ class App {
                     duration: 0.5,
                 });
             }
-            // if (myLocation && !this.#gotUserLocation) {
-            // this._drawCircle(cords);
-            // }
-            // var myRenderer = L.canvas({ padding: 0 });
-            // var circleMarker = L.circleMarker(cords, {
-            //     renderer: myRenderer,
-            //     color: '#3388ff',
-            // }).addTo(this.#map);
-            // // this.#map.fitBounds(circle.getBounds());
-            // L.marker(cords, {
-            //     icon: L.icon({
-            //         iconUrl: '*',
-            //         iconSize: [35, 40], // size of the icon
-            //         popupAnchor: [0, -20], // point from which the popup should open relative to the iconAnchor
-            //     }),
-            // }).addTo(this.#map);
         }
-        //     .bindPopup(
-        //         L.popup({
-        //             maxWidth: 200,
-        //             minWidth: 150,
-        //             autoClose: false,
-        //             closeOnClick: false,
-        //         })
-        //     )
-        // //     .setPopupContent(`test`)
-        //     .openPopup();
-        // this.#map.setView(this.#userCords, 17);
     }
     _drawCircle(cords) {
-        const dot = L.circle(cords, { radius: 2, weight: 10 }).addTo(this.#map);
-        const circle = L.circle(cords, {
+        L.circle(cords, { radius: 2, weight: 10 }).addTo(this.#map);
+        L.circle(cords, {
             radius: 75,
             fillOpacity: 0.15,
             weight: 0.5,
         }).addTo(this.#map);
-        // this.#gotUserLocation = true;
     }
     _pushPopup(stat, message) {
         textAnn.innerHTML = message;
@@ -698,243 +600,18 @@ class App {
         const color = stat == 'success' ? '#2196f3' : '#ff3821';
         document.documentElement.style.setProperty('--pop', `${color}`);
         popup.classList.add('active');
-
         document.addEventListener('click', this.#bindClosePopup);
-        // document.addEventListener('click', closePopup);
     }
+
     _closePopup(e) {
         const check = e.target.closest('.popup');
         if (!check) {
             popup.classList.remove('active');
-            console.log('removed');
-            document.removeEventListener('click', this.#bindClosePopup);
+            document.removeEventListener('click', this.#bindClosePopup); // when it done clear it
         }
     }
 }
-
-// function closePopup(e) {
-//     const check = e.target.closest('.popup');
-//     if (!check) {
-//         popup.classList.remove('active');
-//         console.log('removed');
-//         // console.log(this);
-//         document.removeEventListener('click', closePopup);
-//     }
-// }
-let c1, d1;
-let t1, t2;
 const app = new App();
-
-// app._getPosition();
-// let allCords = [];
-// if (navigator.geolocation)
-//     navigator.geolocation.getCurrentPosition(
-//         function (position) {
-//             const { latitude, longitude } = position.coords;
-//             // const longitude = position.coords.longitude;
-//             const location = `https://www.google.com/maps/@${latitude},${longitude},15z`;
-//             console.log(latitude, longitude);
-//             console.log(location);
-
-//             const cords = [latitude, longitude];
-//             map = L.map('map').setView(cords, 18);
-//             L.tileLayer(
-//                 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
-//                 {
-//                     attribution:
-//                         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-//                 }
-//             ).addTo(map);
-
-//             L.marker(cords)
-//                 .addTo(map)
-//                 .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-//                 .openPopup();
-//             // console.log(map);
-
-//             // handling clicks on map
-//             map.on('click', function (e) {
-//                 console.log(map);
-//                 console.log(e);
-//                 form.classList.remove('hidden');
-//                 inputDistance.focus();
-//                 mapEvent = e;
-
-//                 // console.log(1);
-//                 // const cords = [e.latlng.lat, e.latlng.lng];
-//                 // if (!allCords.includes(cords)) {
-//                 //     L.marker(cords)
-//                 //         .addTo(map)
-//                 //         .bindPopup(
-//                 //             L.popup({
-//                 //                 maxWidth: 250,
-//                 //                 minWidth: 100,
-//                 //                 autoClose: false,
-//                 //                 closeOnClick: false,
-//                 //                 className: 'running-popup',
-//                 //             })
-//                 //         )
-//                 //         .setPopupContent('Workout')
-//                 //         .openPopup();
-//                 //     allCords.push(cords);
-//                 //     console.log(allCords);
-//                 // return;
-//                 // }
-//                 // console.log(1);
-//             });
-//         },
-//         function () {
-//             alert('Could not get your location');
-//         }
-//     );
-// const place = document.getElementById('map');
-// // place.addEventListener('click', e => {
-// //     console.log(e.target);
-// //     // console.log(e.target);
-// //     if (
-// //         e.target.nodeName === 'IMG' ||
-// //         e.target.classList.includes('leaflet-popup')
-// //     )
-// //         e.target.style.display = 'none';
-// // });
-// const getDate = () => {
-//     const date = new Date();
-//     const dateOptions = {
-//         month: 'long',
-//         day: 'numeric',
-//     };
-//     const d = new Intl.DateTimeFormat(navigator.language, dateOptions).format(
-//         date
-//     );
-//     console.log(d);
-//     return d;
-// };
-// const formatText = text => {
-//     return text[0].toUpperCase() + text.slice(1);
-// };
-// const icons = {
-//     running: '🏃‍♂️',
-//     cycling: '🚴‍♀️',
-// };
-// const setData = () => {
-//     const type = inputType.value;
-//     const data = document.createElement('li');
-//     data.classList = `workout workout--${type}`;
-//     data.innerHTML = `
-//     <h2 class="workout__title">${formatText(type)} on ${getDate()}</h2>
-//     <div class="workout__details">
-//         <span class="workout__icon">${icons[`${type}`]}</span>
-//         <span class="workout__value">${inputDistance.value}</span>
-//         <span class="workout__unit">km</span>
-//     </div>
-//     <div class="workout__details">
-//         <span class="workout__icon">⏱</span>
-//         <span class="workout__value">${inputDuration.value}</span>
-//         <span class="workout__unit">min</span>
-//     </div>
-//     <div class="workout__details">
-//         <span class="workout__icon">⚡️</span>
-//         <span class="workout__value">${(
-//             inputDistance.value /
-//             (inputDuration.value / 60)
-//         ).toFixed(2)}</span>
-//         <span class="workout__unit">km/h</span>
-//     </div>
-//     <div class="workout__details">
-//         <span class="workout__icon">${type === 'running' ? '🦶🏼' : '⛰'}</span>
-//         <span class="workout__value">${
-//             type === 'running' ? inputCadence.value : inputElevation.value
-//         }</span>
-//         <span class="workout__unit">${type === 'running' ? 'spm' : 'm'}</span>
-//     </div>
-//     `;
-//     containerWorkouts.appendChild(data);
-// };
-// form.addEventListener('submit', function (e) {
-//     e.preventDefault();
-//     const cords = [mapEvent.latlng.lat, mapEvent.latlng.lng];
-
-//     L.marker(cords)
-//         .addTo(map)
-//         .bindPopup(
-//             L.popup({
-//                 maxWidth: 250,
-//                 minWidth: 100,
-//                 autoClose: false,
-//                 closeOnClick: false,
-//                 className: `${inputType.value}-popup`,
-//             })
-//         )
-//         .setPopupContent(
-//             `${icons[`${inputType.value}`]} ${formatText(
-//                 inputType.value
-//             )} on ${getDate()}`
-//         )
-//         .openPopup();
-//     setData();
-//     // Update UI
-//     //Hide Form;
-//     form.classList.add('hidden');
-//     console.log(allCords);
-//     // Clear data from form
-//     inputDistance.value =
-//         inputCadence.value =
-//         inputDuration.value =
-//         inputElevation.value =
-//             '';
-// });
-// // let types = inputType.querySelectorAll('option');
-// // types.forEach(el => {
-// // el.addEventListener('click', () => {
-// // console.log(1);
-// // console.log(e.target.nodeName);
-// // console.log(e.target);
-// // if (e.target.nodeName === 'OPTION') console.log(e.target);
-// // });
-// // });
-
-// // const slider = document.querySelector('.sidebar');
-// inputType.addEventListener('change', () => {
-//     inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
-//     inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
-//     // console.log(e.target.nodeName);
-//     // console.log(e.target);
-//     // if (e.target.nodeName === 'OPTION') console.log(e.target);
-// });
-// const setData = () => {
-//     const type = inputType.value;
-//     const data = document.createElement('li');
-//     data.classList = `workout workout--${type}`;
-//     data.innerHTML = `
-//     <h2 class="workout__title">${formatText(type)} on ${getDate()}</h2>
-//     <div class="workout__details">
-//         <span class="workout__icon">${icons[`${type}`]}</span>
-//         <span class="workout__value">${inputDistance.value}</span>
-//         <span class="workout__unit">km</span>
-//     </div>
-//     <div class="workout__details">
-//         <span class="workout__icon">⏱</span>
-//         <span class="workout__value">${inputDuration.value}</span>
-//         <span class="workout__unit">min</span>
-//     </div>
-//     <div class="workout__details">
-//         <span class="workout__icon">⚡️</span>
-//         <span class="workout__value">${(
-//             inputDistance.value /
-//             (inputDuration.value / 60)
-//         ).toFixed(2)}</span>
-//         <span class="workout__unit">km/h</span>
-//     </div>
-//     <div class="workout__details">
-//         <span class="workout__icon">${type === 'running' ? '🦶🏼' : '⛰'}</span>
-//         <span class="workout__value">${
-//             type === 'running' ? inputCadence.value : inputElevation.value
-//         }</span>
-//         <span class="workout__unit">${type === 'running' ? 'spm' : 'm'}</span>
-//     </div>
-//     `;
-//     containerWorkouts.appendChild(data);
-// };
 class Workout {
     date = getDate();
     constructor(cords, distance, duration, id = +Date.now()) {
@@ -968,5 +645,3 @@ class Cycling extends Workout {
         return (this.distance / (this.duration / 60)).toFixed(2);
     }
 }
-// const newss = new workout();
-const run1 = new Running();
