@@ -522,17 +522,60 @@ class App {
         this.#map.setView(final, zoomLevel);
     }
     _checkView() {
+        // let zoomLevel = --this.#mapZoomLevel;
+        // // Get min cords workout in viewport of the map
+        // const one = this.#map.getBounds().contains(this._findMin());
+        // // Get max cords workout in viewport of the map
+        // const two = this.#map.getBounds().contains(this._findMax());
+        // // Check if min and max cords in viewport if no adjust viewport and check again
+        // // for()
+        // if (!one || !two) {
+        //     this._viewPort(--zoomLevel);
+        //     setTimeout(() => {
+        //         this._checkView();
+        //     }, 500);
+        // }
+
+        // new try
         let zoomLevel = --this.#mapZoomLevel;
+        // zoomLevel--;
+        // const bounds = this.#map.getBounds();
         // Get min cords workout in viewport of the map
-        const one = this.#map.getBounds().contains(this._findMin());
+        // const one = this.#map.getBounds().contains(this._findMin());
+        // const one = bounds.contains(this._findMin());
         // Get max cords workout in viewport of the map
-        const two = this.#map.getBounds().contains(this._findMax());
+        // const two = this.#map.getBounds().contains(this._findMax());
+        // const two = bounds.contains(this._findMax());
+        // console.log(one, two);
         // Check if min and max cords in viewport if no adjust viewport and check again
-        if (!one || !two) {
-            this._viewPort(--zoomLevel);
+        let checker = true;
+        const layers = this.#map._layers;
+        for (const layer in layers) {
+            if (layers[layer]._latlng === undefined) continue;
+            else {
+                if (this.#map.getBounds().contains(layers[layer]._latlng))
+                    continue;
+                else {
+                    console.log(1);
+                    checker = false;
+                    break;
+                }
+                // const { lat, lng } = layers[layer]._latlng;
+                // if (cords[0] == lat && cords[1] == lng)
+                // this.#map.removeLayer(layers[layer]);
+            }
+        }
+        // if (!one || !two) {
+        if (!checker) {
+            // this._viewPort(--zoomLevel);
+            // (async () => {
+            // console.log(1);
+            this._viewPort(zoomLevel);
+            // this._checkView()
+            // call.addEventListener('load', () => {
             setTimeout(() => {
                 this._checkView();
-            }, 500);
+            }, 200);
         }
     }
     _GetCurrentPosition(cords, myLocation = false) {
