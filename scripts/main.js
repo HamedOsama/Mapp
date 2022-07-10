@@ -77,7 +77,6 @@ class App {
             attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(this.#map);
-        map = this.#map;
         currentLocationBtn.addEventListener(
             'click',
             this._GetCurrentPosition.bind(this, this.#userCords, true)
