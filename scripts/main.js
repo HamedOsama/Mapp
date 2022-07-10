@@ -306,7 +306,11 @@ class App {
             });
         }
         //adjust viewport
-        if (this.#workouts.length > 1) this._checkView();
+        // if (this.#workouts.length > 1) this._checkView();
+        //best UI but slower loading
+        setTimeout(() => {
+            if (this.#workouts.length > 1) this._checkView();
+        }, 10);
     }
     _updateWorkout(e) {
         e.addEventListener('click', () => {
@@ -551,7 +555,8 @@ class App {
         let checker = true;
         const layers = this.#map._layers;
         for (const layer in layers) {
-            if (layers[layer]._latlng === undefined) continue;
+            if (layers[layer]._latlng === undefined || layers[layer]._mRadius)
+                continue;
             else {
                 if (this.#map.getBounds().contains(layers[layer]._latlng))
                     continue;
