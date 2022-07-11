@@ -491,97 +491,9 @@ class App {
             });
         }
     }
-    _findMin() {
-        let min = 9999999;
-        let element;
-        this.#workouts.forEach(el => {
-            if (el.cords[0] + el.cords[1] < min) {
-                min = el.cords[0] + el.cords[1];
-                element = el;
-            }
-        });
-        return element.cords;
-    }
-    _findMax() {
-        let max = -1;
-        let element;
-        this.#workouts.forEach(el => {
-            if (el.cords[0] + el.cords[1] > max) {
-                max = el.cords[0] + el.cords[1];
-                element = el;
-            }
-        });
-        return element.cords;
-    }
-    _midpoint(arr1, arr2) {
-        return [
-            Math.abs(arr1[0] + arr2[0]) / 2,
-            Math.abs(arr1[1] + arr2[1]) / 2,
-        ];
-    }
-    _viewPort(zoomLevel) {
-        const first = this._findMin();
-        const sec = this._findMax();
-        const final = this._midpoint(first, sec);
-        this.#map.setView(final, zoomLevel);
-    }
     _checkView() {
-        // let zoomLevel = --this.#mapZoomLevel;
-        // // Get min cords workout in viewport of the map
-        // const one = this.#map.getBounds().contains(this._findMin());
-        // // Get max cords workout in viewport of the map
-        // const two = this.#map.getBounds().contains(this._findMax());
-        // // Check if min and max cords in viewport if no adjust viewport and check again
-        // // for()
-        // if (!one || !two) {
-        //     this._viewPort(--zoomLevel);
-        //     setTimeout(() => {
-        //         this._checkView();
-        //     }, 500);
-        // }
-
-        // new try
-        let zoomLevel = --this.#mapZoomLevel;
-        // zoomLevel--;
-        // const bounds = this.#map.getBounds();
-        // Get min cords workout in viewport of the map
-        // const one = this.#map.getBounds().contains(this._findMin());
-        // const one = bounds.contains(this._findMin());
-        // Get max cords workout in viewport of the map
-        // const two = this.#map.getBounds().contains(this._findMax());
-        // const two = bounds.contains(this._findMax());
-        // console.log(one, two);
-        // Check if min and max cords in viewport if no adjust viewport and check again
-        let checker = true;
-        const layers = this.#map._layers;
-        for (const layer in layers) {
-            if (layers[layer]._latlng === undefined || layers[layer]._mRadius)
-                continue;
-            else {
-                if (this.#map.getBounds().contains(layers[layer]._latlng))
-                    continue;
-                else {
-                    console.log(1);
-                    checker = false;
-                    break;
-                }
-                // const { lat, lng } = layers[layer]._latlng;
-                // if (cords[0] == lat && cords[1] == lng)
-                // this.#map.removeLayer(layers[layer]);
-            }
-        }
-        // if (!one || !two) {
-        if (!checker) {
-            // this._viewPort(--zoomLevel);
-            // (async () => {
-            // console.log(1);
-            this._viewPort(zoomLevel);
-            // this._checkView()
-            // call.addEventListener('load', () => {
-            setTimeout(() => {
-                this._checkView();
-            }, 200);
-        }
+        const allCords = this.#workouts.map(workout => workout.cords);
+        this.#map.fitBounds(allCords, { padding: [20, 20] });
     }
     _GetCurrentPosition(cords, myLocation = false) {
         // Get center of current viewport
