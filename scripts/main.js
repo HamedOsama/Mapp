@@ -27,7 +27,7 @@ const getDate = () => {
 class App {
     #bindClosePopup = this._closePopup.bind(this);
     #icon = L.icon({
-        iconUrl: './icon.png',
+        iconUrl: './imgs/icon.png',
         iconSize: [35, 40], // size of the icon
         popupAnchor: [0, -20], // point from which the popup should open relative to the iconAnchor
     });
