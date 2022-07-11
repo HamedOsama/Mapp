@@ -10,7 +10,6 @@ const inputElevation = document.querySelector('.form__input--elevation');
 const deleteBtn = document.querySelector('.btn-delete');
 const editBtn = document.querySelector('.btn-edit');
 const currentLocationBtn = document.querySelector('.currentLocation');
-// let map, mapEvent;
 
 const getDate = () => {
     const date = new Date();
@@ -24,9 +23,7 @@ const getDate = () => {
     ).format(date);
     return current;
 };
-const formatText = text => {
-    return text[0].toUpperCase() + text.slice(1);
-};
+
 class App {
     #bindClosePopup = this._closePopup.bind(this);
     #icon = L.icon({
@@ -46,7 +43,6 @@ class App {
     constructor() {
         // Get user's position
         this._getPosition();
-        // // Get data from local storage
         // Attach  event handlers
         form.addEventListener('keydown', this._newWorkOut.bind(this));
         inputType.addEventListener('change', this._toggleElevationField);
@@ -128,6 +124,9 @@ class App {
     _validateInputs(...arr) {
         return arr.every(i => i > 0 && Number.isFinite(i));
     }
+    _formatText(text) {
+        return text[0].toUpperCase() + text.slice(1);
+    }
     _renderWorkoutMaker(workout) {
         //put mark
         L.marker(workout.cords, { icon: this.#icon })
@@ -142,7 +141,7 @@ class App {
                 })
             )
             .setPopupContent(
-                `${this.#icons[`${workout.type}`]} ${formatText(
+                `${this.#icons[`${workout.type}`]} ${this._formatText(
                     workout.type
                 )} on ${workout.date}`
             )
@@ -154,7 +153,7 @@ class App {
         data.classList = `workout workout--${workout.type}`;
         data.innerHTML = `
         <div class="title">
-        <h2 class="workout__title" id="workout-heading">${formatText(
+        <h2 class="workout__title" id="workout-heading">${this._formatText(
             workout.type
         )} on ${workout.date}</h2>
         <button class="btn btn-delete">
@@ -426,7 +425,7 @@ class App {
             }
             currentLI.querySelector(
                 '#workout-heading'
-            ).innerHTML = `${formatText(type)} on ${oldDate}`;
+            ).innerHTML = `${this._formatText(type)} on ${oldDate}`;
             this.#workouts[index].id = +form.dataset.id;
             this.#workouts[index].date = oldDate;
             this.#workouts[index].cords = oldCords;
@@ -532,7 +531,7 @@ class App {
     }
     _pushPopup(stat, message) {
         textAnn.innerHTML = message;
-        status.innerHTML = formatText(stat);
+        status.innerHTML = this._formatText(stat);
         icon.innerHTML = stat == 'success' ? success : failed;
         const color = stat == 'success' ? '#2196f3' : '#ff3821';
         document.documentElement.style.setProperty('--pop', `${color}`);
