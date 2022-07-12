@@ -8,15 +8,15 @@
 
 In this app, you can log your running or cycling workouts with location, distance, time, pace, and steps/minute. You can also see all your workouts at a glance and on a map.
 
+## Live Demo
+
+**You Can See The `Mapp` Live On:** [Here](https://hamedosama.github.io/Mapp/)
+
 # Application flowchart
 
 <h1 align="center">
     <img src="./imgs/Mapty-flowchart.png"/>
 </h1>
-
-# Important
-
-**You Can See The `Bankist` Live On:** [Here](https://hamedosama.github.io/Mapp/)
 
 ## :rocket: Technologies used:
 
