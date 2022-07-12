@@ -51,4 +51,5 @@ Developed by **Hamed Osama**
 
 ## Contact
 
-**You Can Mail Me on: [`hamedosama19@gmail.com`](hamedosama19@gmail.com)**
+**Gmail: [`hamedosama19@gmail.com`]**
+**[`LinkedIN`](https://www.linkedin.com/in/hamed-osama-70b838206/)**
