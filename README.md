@@ -6,8 +6,7 @@
 
 ## Description
 
-Mapp is map workout, In this app you can log your running or cycling workouts with location, distance, time, pace, and steps/minute.
-You can also see all your workouts at a glance and on a map, get your current location, update and delete workouts.
+Mapp is map workout application, In this app you can log your running or cycling workouts with location, distance, time, pace, and steps/minute, You can also see all your workouts at a glance and on a map, get your current location, update and delete workouts.
 
 ## Live Demo
 
