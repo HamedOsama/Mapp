@@ -68,7 +68,7 @@ class App {
         const { latitude, longitude } = position.coords;
         const cords = [latitude, longitude];
         this.#userCords = cords;
-        this.#map = L.map('map').setView(cords, 16);
+        this.#map = L.map('map').setView(cords, 17);
         L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
             attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
