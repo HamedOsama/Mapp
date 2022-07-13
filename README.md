@@ -1,8 +1,8 @@
 ## Mapp
 
 <h1 align="center">
-    [![Watch the video](imgs/demo.mkv)]
 </h1>
+    [![Watch the video](imgs/demo.mkv)]
 
 ## Description
 
