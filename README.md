@@ -1,8 +1,8 @@
 ## Mapp
 
 <h1 align="center">
+  <video src="../Mapp/imgs/demo.mp4" autoplay="autoplay"></video>
 </h1>
-    [![Watch the video](imgs/demo.mkv)]
 
 ## Description
 
