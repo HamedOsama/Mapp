@@ -1,7 +1,7 @@
 ## Mapp
 
 <h1 align="center">
-  <video src="./imgs/demo.mkv" loop="loop" autoplay="autoplay">
+  <video src="imgs/demo.mkv" autoplay="autoplay"></video>
   </video>
 </h1>
 
